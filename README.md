@@ -49,7 +49,9 @@ shippingCalculator( form, {
 #### Options
 
 **defaultCountry** - This will be selected immediately. Default: United States
+
 **reponseCb** - Will be called after the AJAX request completes. This function is passed the raw unparsed JSON from the AJAX request and the address data sent to the AJAX endpoint (Country, Province, Zip)
+
 **selectContainer** - A string to query the DOM with, to define where the Country and Province selects will be rendered
 
 ### Todo
