@@ -1,0 +1,3 @@
+QUnit.test('My first test', function(assert) {
+   // Assertions here...
+});

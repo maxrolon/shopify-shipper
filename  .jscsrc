@@ -1,0 +1,6 @@
+{
+    "preset": "idiomatic",
+    "maximumLineLength": 120,
+    "disallowMixedSpacesAndTabs": true,
+    "requireCamelCaseOrUpperCaseIdentifiers": false
+}

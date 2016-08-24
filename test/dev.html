@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Shipping Calculator</title>
+  </head>
+  <body>
+    <form data-init="shipping-calculator">
+			<div data-type="select-container">
+				<select name="country"></select>
+				<select name="province"></select>
+			</div>
+			<input type="text" name="zip">
+			<input type="submit" value="submit">
+			<div data-type="result"></div>
+		</form>
+    <form data-init="shipping-calculator">
+			<div data-type="select-container"></div>
+			<input type="text" name="zip">
+			<input type="submit" value="submit">
+			<div data-type="result"></div>
+		</form>
+    <script src="countries.js"></script>
+    <script src="dev.min.js"></script>
+  </body>
+</html>
