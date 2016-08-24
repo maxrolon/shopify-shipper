@@ -33,7 +33,6 @@
     "test": "test"
   },
   "dependencies": {
-    "await.js": "0.0.5",
     "nanoajax": "^0.4.3"
   },
   "repository": {
