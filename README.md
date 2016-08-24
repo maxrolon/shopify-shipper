@@ -4,7 +4,7 @@ Fetch Shopify shipping rates for a particular address and render the results.
 
 ### Limitations
 
-For use in Shopify-hosted themes only. This module does not support CORS requests
+For use in Shopify-hosted themes only. This module does not support CORS requests.
 
 ### Usage
 
