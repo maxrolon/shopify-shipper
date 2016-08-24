@@ -2,11 +2,11 @@ Shipping Calculator for Shopify
 ==============================
 Fetch Shopify shipping rates for a particular address and render the results.
 
-#### Limitations
+### Limitations
 
 For use in Shopify-hosted themes only. This module does not support CORS requests
 
-#### Usage
+### Usage
 
 HTML
 ```html
@@ -46,7 +46,7 @@ shippingCalculator( form, {
 })
 ```
 
-#### Options
+### Options
 
 **defaultCountry** - This will be selected immediately. Default: United States
 
