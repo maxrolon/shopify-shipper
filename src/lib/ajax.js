@@ -1,28 +1,22 @@
-import endpoints from './mock'
+import nanoajax from 'nanoajax'
 
-let nanoajax = require('nanoajax')
+const toQueryString = (fields) => {
+  let data = ''
+  let names = Object.keys(fields)
 
-let data
-let endCb
+  for (let i = 0; i < names.length; i++){
+    let name = names[i]
+    let value = fields[name]
+    data += `${encodeURIComponent(`shipping_address[${name}]`)}=${encodeURIComponent(value)}${i < names.length -1 ? '&' : ''}`
+  }
 
-function toQueryString(obj){
-	let str = ''
-	for (let key in obj){
-		str += key+'='+obj[key]+'&'
-	}
-	return str.slice(0, -1);
+  return data
 }
 
-function prepare(){
-	nanoajax.ajax({url:endpoints.prepare,body:toQueryString(data),method:"post"},get)
-}
+export const requestShippingRates = (endpoint, data, cb) => nanoajax.ajax({
+  method: 'post',
+  url: endpoint,
+  body: toQueryString(data)
+}, cb)
 
-function get(){
-	nanoajax.ajax({url:endpoints.get},endCb)
-}
-
-export default (inputs, cb) => {
-	data = inputs
-	endCb = cb
-	prepare()
-}
+export const fetchShippingRates = (endpoint, cb) => nanoajax.ajax({ url: endpoint }, cb)

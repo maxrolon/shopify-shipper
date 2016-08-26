@@ -1,94 +1,93 @@
-import './lib/polyfills'
-import {selectNodes,addEvent} from './lib/utils'
-import ajax from './lib/ajax'
-import response from './lib/response'
-import Lock from './lib/lock'
-import Select from './lib/Select'
+import './shipper/polyfills'
+import { selectNodes } from './shipper/utils'
+import { requestShippingRates, fetchShippingRates } from './shipper/ajax'
+import { formatSuccess, formatError }  from './shipper/response'
+import Lock from './shipper/lock'
+import Select from './shipper/Select'
 
-export default (el,args={}) => {
-	let instance
+export default (el, options = {}) => {
+	const settings = Object.assign({}, {
+    defaultCountry:"United States",
+		countrySelector: '.js-country',
+		provinceSelector: '.js-province',
+    selectContainer: '.js-select-container',
+    success: (data) => console.dir(data),
+    error: (data) => alert(data),
+    endpoints: {
+      prepare: '/cart/prepare_shipping_rates',
+      get: '/cart/async_shipping_rates'
+    }
+	}, options)
 
-	let settings = {
-		endpoints:[
-			'/cart/prepare_shipping_rates',
-			'/cart/async_shipping_rates'
-		],
-		selectContainer:'[data-type="select-container"]',
-		responseCb:response,
-		defaultCountry:"United States"
-	}
-	Object.assign(settings,args)
+	const selectInstance = Select().context(el.querySelector(settings.selectContainer))
+	const country  = selectInstance.make('country', settings.countrySelector)
+	const province = selectInstance.make('province', settings.provinceSelector)
+	const zip = selectNodes('[name="zip"]', el)
+	const lock = Lock()
 
-	let selectWrap = selectNodes(settings.selectContainer,el);
-
-	let select = Select().context(selectWrap)
-	let country  = select.make('country')
-	let province = select.make('province')
-	let model = {
+	const model = {
 		isLocked: false,
-		data:{}
-	};
-
-	addEvent(country, 'change', (e) => {
-		model.country = e.target.value
-	})
-
-	addEvent(province, 'change', (e) => {
-		model.province = e.target.value
-	})
-
-	select.update(country, Countries)
-
-	function makeDescriptor(prop){
-		return {
-			get: function(){
-				return this.data[prop]
-			},
-			set: function(val){
-				this.data[prop]= val
-			}
-		}
+		data: {},
+    set country(val){
+      this.data.country = val
+      country.value = val
+      selectInstance.update(province, val)
+      this.province = province.value
+    },
+    get country(){
+      return this.data.country
+    },
+    set province(val){
+      this.data.province = val
+    },
+    get province(){
+      return this.data.province
+    },
+    set zip(val){
+      this.data.zip = val
+    },
+    get zip(){
+      return this.data.zip
+    }
 	}
 
-	Object.defineProperty(model,'country',{
-		get: function(){
-			return this.data.country
-		},
-		set: function(val){
-			this.data.country = val
-			country.value = val
-			select.update(province, val)
-			this.province = province.value
-		}
-	})
+	lock.register(country, province, zip)
 
-	Object.defineProperty(model,'province', makeDescriptor('province') )
-	Object.defineProperty(model,'zip', makeDescriptor('zip') )
+  if (Countries){
+    selectInstance.update(country, Countries)
+  } else {
+    console.warn('Countries global object is not undefined.')
+  }
 
-	let zip = selectNodes('[name="zip"]',el);
-
-	addEvent(zip, 'blur', (e) => {
-		model.zip = zip.value
-	})
-
-	let lock = Lock()
-	lock.register(country,province,zip)
-	
-	//Handle the submission of the form
-	addEvent(el, 'submit', (e) => {
-		e.preventDefault()
-
-		if ( lock.isLocked ) return false
-		lock.lock()
-
-		ajax( model.data, (code,data) => {
-			lock.unLock()
-			settings.responseCb.call(el,data,model.data)
-		})
-	})
+  country.addEventListener('change', (e) => model.country = e.target.value)
+  province.addEventListener('change', (e) => model.province = e.target.value)
+  zip.addEventListener('blur', (e) => model.zip = e.target.value)
 
 	model.country = settings.defaultCountry
+	
+	//Handle the submission of the form
+  el.addEventListener('submit', (e) => {
+		e.preventDefault()
 
-	return instance
+		if (lock.isLocked) return false
+		lock.lock()
+
+    requestShippingRates(settings.endpoints.prepare, model.data, (status, data, req) => {
+      let isValidAddress = status >= 200 && status <= 300 ? true : false
+
+      if (isValidAddress){
+        fetchShippingRates(settings.endpoints.get, (status, data, req) => {
+          let response = formatSuccess(data)
+          settings.success(response)
+        })
+      } else {
+        let response = formatError(data)
+        settings.error(response)
+      }
+
+      lock.unLock()
+    })
+
+    return false
+	})
 }
-
