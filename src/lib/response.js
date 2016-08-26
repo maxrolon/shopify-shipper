@@ -1,16 +1,37 @@
-import {selectNodes} from './utils'
+export const formatSuccess = (data) => {
+  const parsed = JSON.parse(data)
+  const rates = parsed.shipping_rates
 
-export default function(data,modelData) {
-	let el = selectNodes('[data-type="result"]',this)
-	data = JSON.parse(data)
+  if (!rates) return
 
-	if (!data['shipping_rates']) return 
-	let rates = data['shipping_rates']
-	let string = ''
+  const res = [] 
 
-	for (let i=0; i < rates.length; i++){
-		string+=rates[i].name+": "+rates[i].price+"\r\n"
-	}
+  for (let i = 0; i < rates.length; i++){ 
+    let rate = rates[i]
+    res.push({
+      type: rate.name,
+      price: rate.price
+    })
+  }
 
-	el.innerHTML = string
+  return res 
 }
+
+export const formatError = (data) => {
+  const parsed = JSON.parse(data)
+  const keys = Object.keys(parsed)
+
+  let res = ''
+
+  for (let i = 0; i < keys.length; i++){ 
+    let key = keys[i]
+    res += `Error: ${key} ${parsed[key][0]}${i !== keys.length - 1 ? ', ' : ''}` 
+  }
+
+  return res
+}
+
+/**
+ * TODO
+ * Write a default template to render to DOM
+ */

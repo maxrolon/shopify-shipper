@@ -1,5 +1,4 @@
 export default () => {
-
 	return {
 		isLocked:false,
 		register:function(...els){
@@ -18,5 +17,4 @@ export default () => {
 			this.isLocked = false;
 		}
 	}
-
 }
