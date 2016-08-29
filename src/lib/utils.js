@@ -4,6 +4,15 @@
 export const getProvinces = country => country ? Countries[country].provinces : null 
 
 /**
+ * Return the element passed, if it's a <select>,
+ * otherwise find the <select> within the passed
+ * node and return it.
+ *
+ * @return {element} selecto element
+ */
+export const findSelect = o => o.nodeName === 'select' ? o : o.getElementsByTagName('select')[0]
+
+/**
  * Status utiltiy functions,
  * for during ajax
  */
@@ -72,7 +81,7 @@ const selectOption = (value, select) => Array.prototype.slice.call(select.option
  * @return {string} the selected value of the target select element
  */ 
 export const updateSelectOptions = (select, options, selectedOption = null) => {
-  const target = select.nodeName === 'select' ? select : select.getElementsByTagName('select')[0]
+  const target = findSelect(select) 
   const prev = target.options[0] ? target.options[0].value : false 
 
   options = Array.isArray(options) ? options : Object.keys(options)

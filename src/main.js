@@ -1,9 +1,9 @@
-import { updateSelectOptions, merge, getProvinces, disable, enable } from './shipper/utils'
+import { updateSelectOptions, merge, findSelect, getProvinces, disable, enable } from './shipper/utils'
 import { requestShippingRates, fetchShippingRates } from './shipper/ajax'
 import { formatSuccess, formatError }  from './shipper/response'
 
 export default (el, options = {}) => {
-  if (typeof window.Countries !== 'object'){ return console.warn('The global Countries object required by your shipping calculator does not exist.')}
+  if (typeof window.Countries !== 'object'){ return console.warn('The global Countries object required by your shipping calculator does not exist.') }
 
   const settings = merge({
     defaultCountry: null,
@@ -26,25 +26,27 @@ export default (el, options = {}) => {
   const selectedProvince = updateSelectOptions(provinceSelect, getProvinces(settings.defaultCountry || Object.keys(Countries)[0]))
 
   const model = {
-    country: selectedCountry,
-    province: selectedProvince,
-    zip: ''
+    get country(){
+      return findSelect(countrySelect).value
+    },
+    get province(){
+      return findSelect(provinceSelect).value
+    },
+    get zip(){
+      return zipInput.value
+    },
   }
 
   countrySelect.addEventListener('change', (e) => {
-    model.country = e.target.value
-
     let availableProvinces = getProvinces(model.country) 
 
     if (availableProvinces){
-      model.province = updateSelectOptions(provinceSelect, availableProvinces)
+      updateSelectOptions(provinceSelect, availableProvinces)
       enable(provinceSelect)
     } else {
       disable(provinceSelect)
     }
   })
-  provinceSelect.addEventListener('change', (e) => model.province = e.target.value)
-  zipInput.addEventListener('keyup', (e) => model.zip = e.target.value)
 
   el.addEventListener('submit', (e) => {
     e.preventDefault()
