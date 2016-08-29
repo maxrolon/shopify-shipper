@@ -1,37 +1,99 @@
-function nodeArray(nodeList){
-	return [].slice.call(nodeList);
+/**
+ * @return {array} Array of provinces
+ */
+export const getProvinces = country => country ? Countries[country].provinces : null 
+
+/**
+ * Return the element passed, if it's a <select>,
+ * otherwise find the <select> within the passed
+ * node and return it.
+ *
+ * @return {element} selecto element
+ */
+export const findSelect = o => o.nodeName === 'select' ? o : o.getElementsByTagName('select')[0]
+
+/**
+ * Status utiltiy functions,
+ * for during ajax
+ */
+export const disable = target => target.classList.add('is-disabled')
+export const enable = target => target.classList.remove('is-disabled')
+
+/**
+ * Merge two objects into a 
+ * new object
+ *
+ * @param {object} target Root object
+ * @param {object} source Object to merge 
+ *
+ * @return {object} A *new* object with all props of the passed objects
+ */
+export const merge = (target, ...args) => {
+  for (let i = 0; i < args.length; i++){
+    let source = args[i]
+    for (let key in source){
+      if (source[key]) target[key] = source[key]
+    }
+  }
+
+  return target 
 }
 
-export function selectNodes(string,el=false){
-	let nodes = (el || document).querySelectorAll(string)
-	if (!nodes.length) return false
-	let nodesArray = nodeArray(nodes)
-	if ( nodesArray.length == 1 ) return nodesArray[0]
-	return nodesArray
+/**
+ * Creates and returns an option with 
+ * the passed value as both the value 
+ * property and the innerHTML property.
+ *
+ * @param {string} val Label and value of option
+ * @return {element} option element
+ */
+const createOption = (val = null) => {
+  var el = document.createElement('option');
+
+  if (!val){ return }
+
+  el.value = val
+  el.innerHTML = val
+
+  return el
 }
 
-export function createNode(name, attrs) {
-	var el = document.createElement(name.toString());
+/**
+ * Select an option within a <select>
+ * based on a given value
+ *
+ * @param {string} value Value to search for
+ * @param {element} select <select> element
+ * @return {element} The first matching select option
+ */
+const selectOption = (value, select) => Array.prototype.slice.call(select.options).filter(function(option, i){
+  if (option.value === value){
+    select.selectedIndex = i
+    return true
+  }
+  return false
+})[0]
 
-	!!attrs && Object.keys(attrs).forEach(function(key) {
-		el.setAttribute(key, attrs[key]);
-	});
+/**
+ * Generate select options for a given select element
+ *
+ * @param {array} options Array of options 
+ * @return {string} the selected value of the target select element
+ */ 
+export const updateSelectOptions = (select, options, selectedOption = null) => {
+  const target = findSelect(select) 
+  const prev = target.options[0] ? target.options[0].value : false 
 
-	return el;
-}
+  options = Array.isArray(options) ? options : Object.keys(options)
 
-export function addProps(){
-	let isNode = prop.nodeType ? true : false
-	let isNumber = 'number' === typeof prop ? true : false
+  const shouldUpdate = !prev || options[0] !== prev ? true : false
 
-	let key = isNumber || isNode ? 'range' : 'options'
+  if (shouldUpdate){
+    target.innerHTML = ''
+    options.forEach(o => target.appendChild(createOption(o)))
+  }
 
-	if (isNode || isNumber){
-		Object.defineProperty(target, key, {
-			value: prop,
-			writable: true
-		})
-	} else if (!isNode) {
-		Object.assign(target.options, prop)
-	}
+  if (selectedOption){ selectOption(selectedOption, target) }
+
+  return target.value
 }

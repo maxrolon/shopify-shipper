@@ -1,81 +1,62 @@
-import './shipper/polyfills'
-import { selectNodes } from './shipper/utils'
+import { updateSelectOptions, merge, findSelect, getProvinces, disable, enable } from './shipper/utils'
 import { requestShippingRates, fetchShippingRates } from './shipper/ajax'
 import { formatSuccess, formatError }  from './shipper/response'
-import Lock from './shipper/lock'
-import Select from './shipper/Select'
 
 export default (el, options = {}) => {
-	const settings = Object.assign({}, {
-    defaultCountry:"United States",
-		countrySelector: '.js-country',
-		provinceSelector: '.js-province',
-    selectContainer: '.js-select-container',
+  if (typeof window.Countries !== 'object'){ return console.warn('The global Countries object required by your shipping calculator does not exist.') }
+
+  const settings = merge({
+    defaultCountry: null,
+    country: '.js-country',
+    province: '.js-province',
+    zip: '.js-zip',
     success: (data) => console.dir(data),
     error: (data) => alert(data),
     endpoints: {
       prepare: '/cart/prepare_shipping_rates',
       get: '/cart/async_shipping_rates'
     }
-	}, options)
+  }, options)
 
-	const selectInstance = Select().context(el.querySelector(settings.selectContainer))
-	const country  = selectInstance.make('country', settings.countrySelector)
-	const province = selectInstance.make('province', settings.provinceSelector)
-	const zip = selectNodes('[name="zip"]', el)
-	const lock = Lock()
+  const countrySelect  = el.querySelector(settings.country) 
+  const provinceSelect  = el.querySelector(settings.province) 
+  const zipInput = el.querySelector(settings.zip)
 
-	const model = {
-		isLocked: false,
-		data: {},
-    set country(val){
-      this.data.country = val
-      country.value = val
-      selectInstance.update(province, val)
-      this.province = province.value
-    },
+  const selectedCountry = updateSelectOptions(countrySelect, Countries, settings.defaultCountry)
+  const selectedProvince = updateSelectOptions(provinceSelect, getProvinces(settings.defaultCountry || Object.keys(Countries)[0]))
+
+  const model = {
     get country(){
-      return this.data.country
-    },
-    set province(val){
-      this.data.province = val
+      return findSelect(countrySelect).value
     },
     get province(){
-      return this.data.province
-    },
-    set zip(val){
-      this.data.zip = val
+      return findSelect(provinceSelect).value
     },
     get zip(){
-      return this.data.zip
-    }
-	}
-
-	lock.register(country, province, zip)
-
-  if (Countries){
-    selectInstance.update(country, Countries)
-  } else {
-    console.warn('Countries global object is not undefined.')
+      return zipInput.value
+    },
   }
 
-  country.addEventListener('change', (e) => model.country = e.target.value)
-  province.addEventListener('change', (e) => model.province = e.target.value)
-  zip.addEventListener('blur', (e) => model.zip = e.target.value)
+  countrySelect.addEventListener('change', (e) => {
+    let availableProvinces = getProvinces(model.country) 
 
-	model.country = settings.defaultCountry
-	
-	//Handle the submission of the form
+    if (availableProvinces){
+      updateSelectOptions(provinceSelect, availableProvinces)
+      enable(provinceSelect)
+    } else {
+      disable(provinceSelect)
+    }
+  })
+
   el.addEventListener('submit', (e) => {
-		e.preventDefault()
+    e.preventDefault()
 
-		if (lock.isLocked) return false
-		lock.lock()
+    disable(el)
 
-    requestShippingRates(settings.endpoints.prepare, model.data, (status, data, req) => {
-      let isValidAddress = status >= 200 && status <= 300 ? true : false
+    requestShippingRates(settings.endpoints.prepare, model, (status, data, req) => {
+      let success = status >= 200 && status <= 300 ? true : false
 
-      if (isValidAddress){
+      if (success){
         fetchShippingRates(settings.endpoints.get, (status, data, req) => {
           let response = formatSuccess(data)
           settings.success(response)
@@ -85,9 +66,12 @@ export default (el, options = {}) => {
         settings.error(response)
       }
 
-      lock.unLock()
+      enable(el)
     })
 
+    // IE10 support
     return false
-	})
+  })
+
+  return model
 }
