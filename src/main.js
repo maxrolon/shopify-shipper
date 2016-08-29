@@ -3,24 +3,24 @@ import { requestShippingRates, fetchShippingRates } from './shipper/ajax'
 import { formatSuccess, formatError }  from './shipper/response'
 
 export default (el, options = {}) => {
-  if (window.Countries === undefined) return console.warn('The global Countries object required by your shipping calculator does not exist.')
+  if (typeof window.Countries !== 'object'){ return console.warn('The global Countries object required by your shipping calculator does not exist.')}
 
-	const settings = merge({
+  const settings = merge({
     defaultCountry: null,
-		country: '.js-country',
-		province: '.js-province',
-		zip: '.js-zip',
+    country: '.js-country',
+    province: '.js-province',
+    zip: '.js-zip',
     success: (data) => console.dir(data),
     error: (data) => alert(data),
     endpoints: {
       prepare: '/cart/prepare_shipping_rates',
       get: '/cart/async_shipping_rates'
     }
-	}, options)
+  }, options)
 
-	const countrySelect  = el.querySelector(settings.country) 
-	const provinceSelect  = el.querySelector(settings.province) 
-	const zipInput = el.querySelector(settings.zip)
+  const countrySelect  = el.querySelector(settings.country) 
+  const provinceSelect  = el.querySelector(settings.province) 
+  const zipInput = el.querySelector(settings.zip)
 
   const selectedCountry = updateSelectOptions(countrySelect, Countries, settings.defaultCountry)
   const selectedProvince = updateSelectOptions(provinceSelect, getProvinces(settings.defaultCountry || Object.keys(Countries)[0]))
@@ -45,9 +45,9 @@ export default (el, options = {}) => {
   })
   provinceSelect.addEventListener('change', (e) => model.province = e.target.value)
   zipInput.addEventListener('keyup', (e) => model.zip = e.target.value)
-	
+
   el.addEventListener('submit', (e) => {
-		e.preventDefault()
+    e.preventDefault()
 
     disable(el)
 
@@ -69,7 +69,7 @@ export default (el, options = {}) => {
 
     // IE10 support
     return false
-	})
+  })
 
   return model
 }

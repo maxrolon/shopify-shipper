@@ -39,14 +39,14 @@ export const merge = (target, ...args) => {
  * @return {element} option element
  */
 const createOption = (val = null) => {
-	var el = document.createElement('option');
+  var el = document.createElement('option');
 
-  if (!val) return
+  if (!val){ return }
 
   el.value = val
   el.innerHTML = val
 
-	return el
+  return el
 }
 
 /**
@@ -84,7 +84,7 @@ export const updateSelectOptions = (select, options, selectedOption = null) => {
     options.forEach(o => target.appendChild(createOption(o)))
   }
 
-  if (selectedOption) selectOption(selectedOption, target)
+  if (selectedOption){ selectOption(selectedOption, target) }
 
   return target.value
 }

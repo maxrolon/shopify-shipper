@@ -2,7 +2,7 @@ export const formatSuccess = (data) => {
   const parsed = JSON.parse(data)
   const rates = parsed.shipping_rates
 
-  if (!rates) return
+  if (!rates){ return }
 
   const res = [] 
 
