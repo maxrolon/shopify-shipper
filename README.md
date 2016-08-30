@@ -1,5 +1,3 @@
-##ASAP TODO: Update readme
-
 Shipping Calculator for Shopify
 ==============================
 Fetch Shopify shipping rates for a particular address and render the results.
@@ -19,12 +17,12 @@ HTML
     <title>Shipping Calculator</title>
   </head>
   <body>
-    <form id="shippingCalculator">
-			<div data-type="select-container"></div>
-			<input type="text" name="zip">
-			<input type="submit" value="submit">
-			<div data-type="result"></div>
-		</form>
+  	<form id="shippingCalculator">
+		<select class="js-country></select>
+		<select class="js-province></select>
+		<input type="text" name="zip">
+		<input type="submit" value="submit">
+	</form>
     <script src="/services/countries.js"></script>
     <script src="main.js"></script>
   </body>
@@ -43,16 +41,18 @@ import shippingCalculator from "./../src/main"
 let form = document.getElementById('shippingCalculator')
 shippingCalculator( form, {
 	defaultCountry:"Canada",
-	responseCb:function(JSONData,modelData){},
-	selectContainer:'[data-type="select-container"]'
+	success:function(data){},
+	error:function(data){}
 })
 ```
-
-### Options
+### API
 
 - **defaultCountry** - This will be selected immediately. Default: United States
-- **reponseCb** - Will be called after the AJAX request completes. This function is passed the raw unparsed JSON from the AJAX request and the address data sent to the AJAX endpoint (Country, Province, Zip)
-- **selectContainer** - A string to query the DOM with, to define where the Country and Province selects will be rendered
+- **success** - Will be called after a successful AJAX request completes. This function is passed an array of shipping data.
+- **error** - Will be called if the AJAX request results in error. This function is passed an error string. 
+- **country** - Query selector string (default:```.js-country```). Both a ```select``` node or ```div``` containing a ```select``` node are supported.
+- **province** - Query selector string (default:```.js-province```). Both a ```select``` node or div containing a ```select``` node are supported.
+- **zip** - Query selector string (default:```.js-province```). Expects an ```input[type="text"]``` node.
 
 ### Todo
 1. Write tests
