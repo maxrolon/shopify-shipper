@@ -18,8 +18,8 @@ HTML
   </head>
   <body>
   	<form id="shippingCalculator">
-		<select class="js-country></select>
-		<select class="js-province></select>
+		<select class="js-country"></select>
+		<select class="js-province"></select>
 		<input type="text" name="zip">
 		<input type="submit" value="submit">
 	</form>
