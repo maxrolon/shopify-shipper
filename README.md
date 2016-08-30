@@ -52,7 +52,7 @@ shippingCalculator( form, {
 - **error** - Will be called if the AJAX request results in error. This function is passed an error string. 
 - **country** - Query selector string (default:```.js-country```). Both a ```select``` node or ```div``` containing a ```select``` node are supported.
 - **province** - Query selector string (default:```.js-province```). Both a ```select``` node or div containing a ```select``` node are supported.
-- **zip** - Query selector string (default:```.js-province```). Expects an ```input[type="text"]``` node.
+- **zip** - Query selector string (default:```.js-zip```). Expects an ```input[type="text"]``` node.
 
 ### Todo
 1. Write tests
