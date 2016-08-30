@@ -10,7 +10,7 @@ export const getProvinces = country => country ? Countries[country].provinces : 
  *
  * @return {element} selecto element
  */
-export const findSelect = o => o.nodeName === 'select' ? o : o.getElementsByTagName('select')[0]
+export const findSelect = o => o.nodeName.toLowerCase() === 'select' ? o : o.getElementsByTagName('select')[0]
 
 /**
  * Status utiltiy functions,

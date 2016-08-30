@@ -1,6 +1,6 @@
-import { updateSelectOptions, merge, findSelect, getProvinces, disable, enable } from './shipper/utils'
-import { requestShippingRates, fetchShippingRates } from './shipper/ajax'
-import { formatSuccess, formatError }  from './shipper/response'
+import { updateSelectOptions, merge, findSelect, getProvinces, disable, enable } from './lib/utils'
+import { requestShippingRates, fetchShippingRates } from './lib/ajax'
+import { formatSuccess, formatError }  from './lib/response'
 
 export default (el, options = {}) => {
   if (typeof window.Countries !== 'object'){ return console.warn('The global Countries object required by your shipping calculator does not exist.') }
@@ -18,13 +18,16 @@ export default (el, options = {}) => {
     }
   }, options)
 
-  const countrySelect  = el.querySelector(settings.country) 
-  const provinceSelect  = el.querySelector(settings.province) 
+  //Create references to DOM Nodes
+  const countrySelect = el.querySelector(settings.country) 
+  const provinceSelect = el.querySelector(settings.province) 
   const zipInput = el.querySelector(settings.zip)
 
+  //Render select options based on Countries JSON and defualt selections
   const selectedCountry = updateSelectOptions(countrySelect, Countries, settings.defaultCountry)
   const selectedProvince = updateSelectOptions(provinceSelect, getProvinces(settings.defaultCountry || Object.keys(Countries)[0]))
 
+  //Lazy getter for form values
   const model = {
     get country(){
       return findSelect(countrySelect).value
@@ -37,6 +40,8 @@ export default (el, options = {}) => {
     },
   }
 
+  //Respond to the country change event
+  //to change state of dependant province selector
   countrySelect.addEventListener('change', (e) => {
     let availableProvinces = getProvinces(model.country) 
 
@@ -44,12 +49,15 @@ export default (el, options = {}) => {
       updateSelectOptions(provinceSelect, availableProvinces)
       enable(provinceSelect)
     } else {
+      provinceSelect.innerHTML = ''
       disable(provinceSelect)
     }
   })
 
   el.addEventListener('submit', (e) => {
-    e.preventDefault()
+    e.preventDefault(); 
+    //IE support
+    e.returnValue = false;
 
     disable(el)
 
@@ -69,8 +77,6 @@ export default (el, options = {}) => {
       enable(el)
     })
 
-    // IE10 support
-    return false
   })
 
   return model
