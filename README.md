@@ -20,7 +20,7 @@ HTML
   	<form id="shippingCalculator">
 		<select class="js-country"></select>
 		<select class="js-province"></select>
-		<input type="text" name="zip">
+		<input type="text" class="js-zip">
 		<input type="submit" value="submit">
 	</form>
     <script src="/services/countries.js"></script>
