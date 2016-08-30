@@ -29,10 +29,6 @@ HTML
 </html>
 ```
 - Request ```/services/countries.js``` before your javascript bundle. This defines a "Countries" global that we use in this library
-- Ensure that an input with name "zip" existings with-in the form element
-- Ensure that an input with type "submit" existings with-in the form element
-- Shipping results can be rendered in an [data-type="results"] element or rendering functionality can be overridden by a defined callback function (see below)
-- Country and province selects will be added to the [data-type="select-container"] element or a defined element (see below)
 
 Javascript
 ```javascript
