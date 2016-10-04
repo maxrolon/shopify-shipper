@@ -1,84 +1,94 @@
-import { updateSelectOptions, merge, findSelect, getProvinces, disable, enable } from './lib/utils'
-import { requestShippingRates, fetchShippingRates } from './lib/ajax'
-import { formatSuccess, formatError }  from './lib/response'
+import loop from 'loop.js'
+import { 
+  requestShippingRates, 
+  fetchShippingRates 
+} from './lib/ajax'
+import { 
+  formatSuccess, 
+  formatError 
+} from './lib/response'
+import { 
+  updateSelectOptions,
+  getProvinces
+} from './lib/utils'
 
-export default (el, options = {}) => {
-  if (typeof window.Countries !== 'object'){ return console.warn('The global Countries object required by your shipping calculator does not exist.') }
+if (typeof window.Countries !== 'object'){ throw new Error('The global Countries object required by your shipping calculator does not exist.') }
 
-console.dir(el)
-  const settings = merge({
-    defaultCountry: null,
-    country: '.js-country',
-    province: '.js-province',
-    zip: '.js-zip',
-    success: (data) => console.dir(data),
-    error: (data) => alert(data),
-    endpoints: {
-      prepare: '/cart/prepare_shipping_rates',
-      get: '/cart/async_shipping_rates'
-    }
-  }, options)
+export default (el, opts = {}) => {
+  const defaultCountry = opts.defaultCountry || null
+  const endpoints = opts.endpoints || {
+    prepare: '/cart/prepare_shipping_rates',
+    get: '/cart/async_shipping_rates'
+  } 
 
-  //Create references to DOM Nodes
-  const countrySelect = el.querySelector(settings.country) 
-  const provinceSelect = el.querySelector(settings.province) 
-  const zipInput = el.querySelector(settings.zip)
+  const countrySelect = el.querySelector('[name="country"]') 
+  const provinceSelect = el.querySelector('[name="province"]') 
+  const zipInput = el.querySelector('[name="zip"]')
+  const submitButton = el.querySelector('[type="submit"]')
 
-  //Render select options based on Countries JSON and defualt selections
-  const selectedCountry = updateSelectOptions(countrySelect, Countries, settings.defaultCountry)
-  const selectedProvince = updateSelectOptions(provinceSelect, getProvinces(settings.defaultCountry || Object.keys(Countries)[0]))
-
-  //Lazy getter for form values
   const model = {
     get country(){
-      return findSelect(countrySelect).value
+      return countrySelect.value
     },
     get province(){
-      return findSelect(provinceSelect).value
+      return provinceSelect.value
     },
     get zip(){
       return zipInput.value
-    },
+    }
   }
 
-  //Respond to the country change event
-  //to change state of dependant province selector
+  const instance = Object.create(loop(), {
+    model: {
+      value: model
+    }
+  })
+
   countrySelect.addEventListener('change', (e) => {
     let availableProvinces = getProvinces(model.country) 
 
     if (availableProvinces){
       updateSelectOptions(provinceSelect, availableProvinces)
-      enable(provinceSelect)
+      provinceSelect.disabled = false
     } else {
       provinceSelect.innerHTML = ''
-      disable(provinceSelect)
+      provinceSelect.disabled = true
     }
+
+    instance.emit('change', model)
   })
 
-  el.addEventListener('submit', (e) => {
-    e.preventDefault(); 
-    //IE support
-    e.returnValue = false;
+  el.addEventListener('submit', e => {
+    e.preventDefault()
+    e.returnValue = false // IE support
 
-    disable(el)
+    instance.emit('submit', model)
 
-    requestShippingRates(settings.endpoints.prepare, model, (status, data, req) => {
+    submitButton.disabled = true
+
+    requestShippingRates(endpoints.prepare, model, (status, data, req) => {
       let success = status >= 200 && status <= 300 ? true : false
 
       if (success){
-        fetchShippingRates(settings.endpoints.get, (status, data, req) => {
+        fetchShippingRates(endpoints.get, (status, data, req) => {
           let response = formatSuccess(data)
-          settings.success(response)
+
+          instance.emit('success', response)
         })
       } else {
         let response = formatError(data)
-        settings.error(response)
+        instance.emit('error', response)
       }
 
-      enable(el)
+      submitButton.disabled = false 
     })
-
   })
 
-  return model
+  /**
+   * Init
+   */
+  updateSelectOptions(countrySelect, Countries, defaultCountry)
+  updateSelectOptions(provinceSelect, getProvinces(defaultCountry || Object.keys(Countries)[0]))
+
+  return instance 
 }
