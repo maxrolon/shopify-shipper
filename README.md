@@ -12,10 +12,10 @@ npm i shopify-shipping-calculator --save
 
 ## Basic Usage
 ```javascript
-import Calculator from 'shopify-shipping-calculator'
+import calculator from 'shopify-shipping-calculator'
 
 let form = document.querySelector('.js-form')
-shippingCalculator( form, {
+calculator(form, {
   defaultCountry:"Canada"
 })
 ```
@@ -25,7 +25,7 @@ shippingCalculator( form, {
 **defaultCountry** {string}
 The preselected country shown on form load. Default: ```null```
 ```javascript
-shippingCalculator( form, {
+calculator(form, {
   defaultCountry:"Canada"
 })
 ```
@@ -33,7 +33,7 @@ shippingCalculator( form, {
 **country** {string}
 A selector string for the country select node. Default: ```.js-country```
 ```javascript
-shippingCalculator( form, {
+calculator(form, {
   country:".js-country"
 })
 ```
@@ -41,7 +41,7 @@ shippingCalculator( form, {
 **province** {string}
 A selector string for the province select node. Default: ```.js-province```
 ```javascript
-shippingCalculator( form, {
+calculator(form, {
   province:".js-province"
 })
 ```
@@ -50,7 +50,7 @@ shippingCalculator( form, {
 A selector string for the zip input node. Default: ```.js-zip```
 A selector string for the province select node. Default: ```.js-province```
 ```javascript
-shippingCalculator( form, {
+calculator(form, {
   zip:".js-zip"
 })
 ```
@@ -59,7 +59,7 @@ shippingCalculator( form, {
 The callback function to run after the shipping rates have been succesfully returned.
 The callback is passed an array containing the available shipping rates.
 ```javascript
-shippingCalculator( form, {
+calculator(form, {
   success: (data) => alert(data)
 })
 ```
@@ -67,7 +67,7 @@ shippingCalculator( form, {
 **error** {function}
 The callback function to run if the shipping rates request ends in error
 ```javascript
-shippingCalculator( form, {
+calculator(form, {
   success: (data) => console.warn(data)
 })
 ```
@@ -75,13 +75,13 @@ shippingCalculator( form, {
 ## API: Properties
 ```javascript
 
-let calculator = shippingCalculator( form, {
+let instance = calculator(form, {
   defaultCountry:"Canada"
 });
 
-let country = calculator.country //The currently selected country
-let province = calculator.province //The currently selected province
-let zip = calculator.zip //The currently selected zip code
+let country = instance.country //The currently selected country
+let province = instance.province //The currently selected province
+let zip = instance.zip //The currently selected zip code
 ```
 
 ## Markup
