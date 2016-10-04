@@ -39,12 +39,10 @@ default: ```.js-zip```
 
 **success** {function}
 The callback function to run after the shipping rates have been succesfully returned
-The callback is passed an array containing the available shipping rates.
+- The callback is passed an array containing the available shipping rates.
 
 **error** {function}
 The callback function to run if the shipping rates request ends in error
-
-```
 
 ## API: Properties
 ```javascript
