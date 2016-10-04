@@ -34,7 +34,7 @@ shippingCalculator( form, {
 A selector string for the country select node. Default: ```.js-country```
 ```javascript
 shippingCalculator( form, {
-  country:"js-country"
+  country:".js-country"
 })
 ```
 
@@ -42,7 +42,7 @@ shippingCalculator( form, {
 A selector string for the province select node. Default: ```.js-province```
 ```javascript
 shippingCalculator( form, {
-  province:"js-province"
+  province:".js-province"
 })
 ```
 
@@ -51,7 +51,7 @@ A selector string for the zip input node. Default: ```.js-zip```
 A selector string for the province select node. Default: ```.js-province```
 ```javascript
 shippingCalculator( form, {
-  zip:"js-zip"
+  zip:".js-zip"
 })
 ```
 
