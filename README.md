@@ -56,8 +56,8 @@ calculator(form, {
 ```
 
 **success** {function}
-- The callback function to run after the shipping rates have been succesfully returned.
-- The callback is passed an array containing the available shipping rates.
+- The callback function to run after the shipping rates have been succesfully returned
+- The callback is passed an array containing the available shipping rates
 ```javascript
 calculator(form, {
   success: (data) => alert(data)
