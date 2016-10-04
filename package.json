@@ -5,7 +5,7 @@
   "author": "maxrolon",
   "main": "./src/index.js",
   "scripts": {
-    "browser": "mkdir -p browser && browserify src/index.js --standalone src/index.js > browser/index.js",
+    "browser": "mkdir -p browser && browserify src/index.js --standalone shipper -p [minifyify --no-map] > browser/index.js",
     "watch": "watchify test/dev.js -v -d -o test/index.js",
     "test": "ava test/test.js -v",
     "size": "bundle-size ./browser/index.js"
