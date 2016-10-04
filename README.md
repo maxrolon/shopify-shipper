@@ -21,28 +21,56 @@ shippingCalculator( form, {
 ```
 
 ## Configuration
+
 **defaultCountry** {string}
-The preselected country shown on form load
-default: ```null```
+The preselected country shown on form load. Default: ```null```
+```javascript
+shippingCalculator( form, {
+  defaultCountry:"Canada"
+})
+```
 
 **country** {string}
-A selector string for the country select node
-default: ```.js-country```
+A selector string for the country select node. Default: ```.js-country```
+```javascript
+shippingCalculator( form, {
+  country:"js-country"
+})
+```
 
 **province** {string}
-A selector string for the province select node
-default: ```.js-province```
+A selector string for the province select node. Default: ```.js-province```
+```javascript
+shippingCalculator( form, {
+  province:"js-province"
+})
+```
 
 **zip** {string}
-A selector string for the zip input node
-default: ```.js-zip```
+A selector string for the zip input node. Default: ```.js-zip```
+A selector string for the province select node. Default: ```.js-province```
+```javascript
+shippingCalculator( form, {
+  zip:"js-zip"
+})
+```
 
 **success** {function}
-The callback function to run after the shipping rates have been succesfully returned
-- The callback is passed an array containing the available shipping rates.
+The callback function to run after the shipping rates have been succesfully returned.
+The callback is passed an array containing the available shipping rates.
+```javascript
+shippingCalculator( form, {
+  success: (data) => alert(data)
+})
+```
 
 **error** {function}
 The callback function to run if the shipping rates request ends in error
+```javascript
+shippingCalculator( form, {
+  success: (data) => console.warn(data)
+})
+```
 
 ## API: Properties
 ```javascript
