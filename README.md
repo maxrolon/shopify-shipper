@@ -23,7 +23,7 @@ calculator(form, {
 ## Configuration
 
 **defaultCountry** {string}
-The preselected country shown on form load. Default: ```null```
+- The preselected country shown on form load. Default: ```null```
 ```javascript
 calculator(form, {
   defaultCountry:"Canada"
@@ -31,7 +31,7 @@ calculator(form, {
 ```
 
 **country** {string}
-A selector string for the country select node. Default: ```.js-country```
+- A selector string for the country select node. Default: ```.js-country```
 ```javascript
 calculator(form, {
   country:".js-country"
@@ -39,7 +39,7 @@ calculator(form, {
 ```
 
 **province** {string}
-A selector string for the province select node. Default: ```.js-province```
+- A selector string for the province select node. Default: ```.js-province```
 ```javascript
 calculator(form, {
   province:".js-province"
@@ -47,8 +47,8 @@ calculator(form, {
 ```
 
 **zip** {string}
-A selector string for the zip input node. Default: ```.js-zip```
-A selector string for the province select node. Default: ```.js-province```
+- A selector string for the zip input node. Default: ```.js-zip```
+
 ```javascript
 calculator(form, {
   zip:".js-zip"
@@ -56,8 +56,8 @@ calculator(form, {
 ```
 
 **success** {function}
-The callback function to run after the shipping rates have been succesfully returned.
-The callback is passed an array containing the available shipping rates.
+- The callback function to run after the shipping rates have been succesfully returned.
+- The callback is passed an array containing the available shipping rates.
 ```javascript
 calculator(form, {
   success: (data) => alert(data)
@@ -65,7 +65,7 @@ calculator(form, {
 ```
 
 **error** {function}
-The callback function to run if the shipping rates request ends in error
+- The callback function to run if the shipping rates request ends in error
 ```javascript
 calculator(form, {
   success: (data) => console.warn(data)
