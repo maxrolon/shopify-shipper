@@ -1,55 +1,73 @@
-Shipping Calculator for Shopify
-==============================
+##Description
 Fetch Shopify shipping rates for a particular address and render the results.
 
 ### Limitations
-
-For use in Shopify-hosted themes only. This module does not support CORS requests.
-
-### Usage
-
-HTML
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Shipping Calculator</title>
-  </head>
-  <body>
-  	<form id="shippingCalculator">
-		<select class="js-country"></select>
-		<select class="js-province"></select>
-		<input type="text" class="js-zip">
-		<input type="submit" value="submit">
-	</form>
-    <script src="/services/countries.js"></script>
-    <script src="main.js"></script>
-  </body>
-</html>
-```
+- For use in Shopify-hosted themes only. This module does not support CORS requests.
 - Request ```/services/countries.js``` before your javascript bundle. This defines a "Countries" global that we use in this library
 
-Javascript
-```javascript
-import shippingCalculator from "./../src/main"
+## Install 
+```bash
+npm i shopify-shipping-calculator --save
+```
 
-let form = document.getElementById('shippingCalculator')
+## Basic Usage
+```javascript
+import Calculator from 'shopify-shipping-calculator'
+
+let form = document.querySelector('.js-form')
 shippingCalculator( form, {
-	defaultCountry:"Canada",
-	success:function(data){},
-	error:function(data){}
+  defaultCountry:"Canada"
 })
 ```
-### API
 
-- **defaultCountry** - This will be selected immediately. Default: United States
-- **success** - Will be called after a successful AJAX request completes. This function is passed an array of shipping data.
-- **error** - Will be called if the AJAX request results in error. This function is passed an error string. 
-- **country** - Query selector string (default:```.js-country```). Both a ```select``` node or ```div``` containing a ```select``` node are supported.
-- **province** - Query selector string (default:```.js-province```). Both a ```select``` node or div containing a ```select``` node are supported.
-- **zip** - Query selector string (default:```.js-zip```). Expects an ```input[type="text"]``` node.
+## Configuration
+**defaultCountry** {string}
+The preselected country shown on form load
+default: ```null```
 
-### Todo
-1. Write tests
+**country** {string}
+A selector string for the country select node
+default: ```.js-country```
 
+**province** {string}
+A selector string for the province select node
+default: ```.js-province```
+
+**zip** {string}
+A selector string for the zip input node
+default: ```.js-zip```
+
+**success** {function}
+The callback function to run after the shipping rates have been succesfully returned
+The callback is passed an array containing the available shipping rates.
+
+**error** {function}
+The callback function to run if the shipping rates request ends in error
+
+```
+
+## API: Properties
+```javascript
+
+let calculator = shippingCalculator( form, {
+  defaultCountry:"Canada"
+});
+
+let country = calculator.country //The currently selected country
+let province = calculator.province //The currently selected province
+let zip = calculator.zip //The currently selected zip code
+```
+
+## Markup
+```html
+
+<form class="js-form">
+  <select class="js-country"></select>
+  <select class="js-province"></select>
+  <input type="text" class="js-zip">
+  <input type="submit" value="submit">
+</form>
+```
+
+## License 
+MIT

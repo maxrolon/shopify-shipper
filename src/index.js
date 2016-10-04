@@ -5,6 +5,7 @@ import { formatSuccess, formatError }  from './lib/response'
 export default (el, options = {}) => {
   if (typeof window.Countries !== 'object'){ return console.warn('The global Countries object required by your shipping calculator does not exist.') }
 
+console.dir(el)
   const settings = merge({
     defaultCountry: null,
     country: '.js-country',
