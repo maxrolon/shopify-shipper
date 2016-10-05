@@ -28,7 +28,10 @@ export default (el, opts = {}) => {
 
   const model = {
     get country(){
-      return countrySelect.value
+      return {
+        name: countrySelect.value,
+        meta: Countries[countrySelect.value]
+      }
     },
     get province(){
       return provinceSelect.value
@@ -45,10 +48,10 @@ export default (el, opts = {}) => {
   })
 
   countrySelect.addEventListener('change', (e) => {
-    let availableProvinces = getProvinces(model.country) 
+    let { provinces, province_label: provinceLabel, zip_label: zipLabel } = Countries[model.country.name]
 
-    if (availableProvinces){
-      updateSelectOptions(provinceSelect, availableProvinces)
+    if (provinces){
+      updateSelectOptions(provinceSelect, provinces)
       provinceSelect.disabled = false
     } else {
       provinceSelect.innerHTML = ''
@@ -88,7 +91,7 @@ export default (el, opts = {}) => {
    * Init
    */
   updateSelectOptions(countrySelect, Countries, defaultCountry)
-  updateSelectOptions(provinceSelect, getProvinces(defaultCountry || Object.keys(Countries)[0]))
+  updateSelectOptions(provinceSelect, Countries[defaultCountry || Object.keys(Countries)[0]].provinces)
 
   return instance 
 }
