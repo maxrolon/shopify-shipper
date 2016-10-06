@@ -48,7 +48,7 @@ export default (el, opts = {}) => {
   })
 
   countrySelect.addEventListener('change', e => {
-    let { provinces, province_label: provinceLabel, zip_label: zipLabel } = Countries[model.country]
+    let { provinces, zip_required } = Countries[model.country]
 
     if (provinces){
       updateSelectOptions(provinceSelect, provinces)
@@ -57,6 +57,12 @@ export default (el, opts = {}) => {
       provinceSelect.innerHTML = ''
       provinceSelect.disabled = true
     }
+
+    zip_required ? (
+      zipInput.disabled = false 
+    ) : (
+      zipInput.disabled = true 
+    )
 
     instance.emit('change', model)
   })
