@@ -28,27 +28,27 @@ export default (el, opts = {}) => {
 
   const model = {
     get country(){
-      return {
-        name: countrySelect.value,
-        meta: Countries[countrySelect.value]
-      }
+      return countrySelect.value
     },
     get province(){
       return provinceSelect.value
     },
     get zip(){
       return zipInput.value
+    },
+    get meta(){
+      return Countries[this.country]
     }
   }
 
   const instance = Object.create(loop(), {
-    model: {
-      value: model
+    getState: {
+      value: () => model 
     }
   })
 
-  countrySelect.addEventListener('change', (e) => {
-    let { provinces, province_label: provinceLabel, zip_label: zipLabel } = Countries[model.country.name]
+  countrySelect.addEventListener('change', e => {
+    let { provinces, province_label: provinceLabel, zip_label: zipLabel } = Countries[model.country]
 
     if (provinces){
       updateSelectOptions(provinceSelect, provinces)
