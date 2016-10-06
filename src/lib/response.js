@@ -1,20 +1,11 @@
 export const formatSuccess = (data) => {
-  const parsed = JSON.parse(data)
-  const rates = parsed.shipping_rates
-
-  if (!rates){ return }
-
   const res = [] 
+  const rates = JSON.parse(data).shipping_rates
 
-  for (let i = 0; i < rates.length; i++){ 
-    let rate = rates[i]
-    res.push({
-      type: rate.name,
-      price: rate.price
-    })
-  }
-
-  return res 
+  return rates ? rates.map(r => ({
+    type: r.name,
+    price: r.price
+  })) : null
 }
 
 export const formatError = (data) => {
@@ -30,8 +21,3 @@ export const formatError = (data) => {
 
   return res
 }
-
-/**
- * TODO
- * Write a default template to render to DOM
- */

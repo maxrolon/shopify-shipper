@@ -4,42 +4,6 @@
 export const getProvinces = country => country ? Countries[country].provinces : null 
 
 /**
- * Return the element passed, if it's a <select>,
- * otherwise find the <select> within the passed
- * node and return it.
- *
- * @return {element} selecto element
- */
-export const findSelect = o => o.nodeName.toLowerCase() === 'select' ? o : o.getElementsByTagName('select')[0]
-
-/**
- * Status utiltiy functions,
- * for during ajax
- */
-export const disable = target => target.classList.add('is-disabled')
-export const enable = target => target.classList.remove('is-disabled')
-
-/**
- * Merge two objects into a 
- * new object
- *
- * @param {object} target Root object
- * @param {object} source Object to merge 
- *
- * @return {object} A *new* object with all props of the passed objects
- */
-export const merge = (target, ...args) => {
-  for (let i = 0; i < args.length; i++){
-    let source = args[i]
-    for (let key in source){
-      if (source[key]) target[key] = source[key]
-    }
-  }
-
-  return target 
-}
-
-/**
  * Creates and returns an option with 
  * the passed value as both the value 
  * property and the innerHTML property.
@@ -48,9 +12,9 @@ export const merge = (target, ...args) => {
  * @return {element} option element
  */
 const createOption = (val = null) => {
-  var el = document.createElement('option');
-
   if (!val){ return }
+
+  let el = document.createElement('option')
 
   el.value = val
   el.innerHTML = val
@@ -66,13 +30,9 @@ const createOption = (val = null) => {
  * @param {element} select <select> element
  * @return {element} The first matching select option
  */
-const selectOption = (value, select) => Array.prototype.slice.call(select.options).filter(function(option, i){
-  if (option.value === value){
-    select.selectedIndex = i
-    return true
-  }
-  return false
-})[0]
+const selectOption = (val, select) => [].slice.call(select.options).map((o, i) => {
+  if (o.value === val) select.selectedIndex = i
+})
 
 /**
  * Generate select options for a given select element
@@ -80,8 +40,7 @@ const selectOption = (value, select) => Array.prototype.slice.call(select.option
  * @param {array} options Array of options 
  * @return {string} the selected value of the target select element
  */ 
-export const updateSelectOptions = (select, options, selectedOption = null) => {
-  const target = findSelect(select) 
+export const updateSelectOptions = (target, options, selectedOption = null) => {
   const prev = target.options[0] ? target.options[0].value : false 
 
   options = Array.isArray(options) ? options : Object.keys(options)
